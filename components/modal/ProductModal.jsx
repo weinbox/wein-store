@@ -27,6 +27,7 @@ import Stock from "@components/common/Stock";
 import useProductAction from "@hooks/useProductAction";
 import ImageWithFallback from "@components/common/ImageWithFallBack";
 import { useSetting } from "@context/SettingContext";
+import { useStore } from "@context/StoreContext";
 import {
   FiEye,
   FiHeadphones,
@@ -46,6 +47,7 @@ const ProductModal = ({
   campaignInfo,
 }) => {
   const { globalSetting } = useSetting();
+  const { storeSlug } = useStore();
   const { showingTranslateValue } = useUtilsFunction();
   const { item, setItem, totalItems, handleAddItem, handleIncreaseQuantity } =
     useAddToCart();
@@ -95,7 +97,7 @@ const ProductModal = ({
         <div className="inline-block overflow-y-auto h-full align-middle transition-all transform">
           <div className="lg:flex flex-col lg:flex-row md:flex-row w-full max-w-4xl overflow-hidden">
             <Link
-              href={`/product/${product.slug}`}
+              href={`/${storeSlug}/product/${product._id}`}
               passHref
               className="w-full lg:w-[40%]"
             >
@@ -130,7 +132,7 @@ const ProductModal = ({
                 >
                   <Stock In stock={stock} />
                 </div>
-                <Link href={`/product/${product.slug}`}>
+                <Link href={`/${storeSlug}/product/${product._id}`}>
                   <h2
                     onClick={() => setModalOpen(false)}
                     className="text-foreground text-lg md:text-xl lg:text-xl font-medium hover:text-primary cursor-pointer"
@@ -226,7 +228,7 @@ const ProductModal = ({
                     Add to cart
                   </button>
                   <Link
-                    href={`/product/${product.slug}`}
+                    href={`/${storeSlug}/product/${product._id}`}
                     passHref
                     className="w-full relative h-auto flex items-center font-semibold text-sm text-foreground justify-center rounded-md transition-colors py-2 px-4 border border-border bg-card hover:bg-accent hover:text-primary"
                   >
@@ -241,7 +243,7 @@ const ProductModal = ({
                     <span className=" font-semibold py-1 text-sm d-block">
                       <span className="text-muted-foreground">Category</span>{" "}
                       <Link
-                        href={`/search?category=${category_name}&_id=${product?.category?._id}`}
+                        href={`/${storeSlug}?q=${category_name}`}
                         className="cursor-pointer"
                       >
                         <button

@@ -14,6 +14,7 @@ import { notifyError } from "@utils/toast";
 import Rating from "@components/common/Rating";
 import useAddToCart from "@hooks/useAddToCart";
 import { useSetting } from "@context/SettingContext";
+import { useStore } from "@context/StoreContext";
 import Discount from "@components/common/Discount";
 import { handleLogEvent } from "@lib/analytics";
 import useUtilsFunction from "@hooks/useUtilsFunction";
@@ -24,6 +25,7 @@ const ProductCard = ({ product, attributes }) => {
   const modalRef = useRef(null);
   const [modalOpen, setModalOpen] = useState(false);
   const { globalSetting } = useSetting();
+  const { storeSlug } = useStore();
 
   const { items, addItem, updateItemQuantity, inCart } = useCart();
   const { handleIncreaseQuantity } = useAddToCart();
@@ -126,7 +128,7 @@ const ProductCard = ({ product, attributes }) => {
         </div>
         <div className="relative w-full min-h-48 lg:h-48 xl:h-52">
           <Link
-            href={`/product/${product?.slug}`}
+            href={`/${storeSlug}/product/${product?._id}`}
             className="relative block w-full h-full overflow-hidden bg-muted"
           >
             <ImageWithFallback
@@ -209,7 +211,7 @@ const ProductCard = ({ product, attributes }) => {
         <div className="flex flex-1 flex-col space-y-2 px-4 pt-2 pb-4">
           <div className="relative mb-1">
             <Link
-              href={`/product/${product?.slug}`}
+              href={`/${storeSlug}/product/${product?._id}`}
               className="text-sm font-medium text-foreground line-clamp-1 hover:text-primary"
             >
               {showingTranslateValue(product?.title)}

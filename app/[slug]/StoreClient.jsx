@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { useCart } from "react-use-cart";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoBagHandleOutline } from "react-icons/io5";
@@ -10,6 +10,8 @@ import Link from "next/link";
 import ProductCard from "@components/product/ProductCard";
 import StickyCart from "@components/cart/StickyCart";
 import useUtilsFunction from "@hooks/useUtilsFunction";
+import { StoreProvider } from "@context/StoreContext";
+import MobileBottomNav from "@components/store/MobileBottomNav";
 
 const formatNum = (n) =>
   Math.round(n)
@@ -20,6 +22,7 @@ export default function StoreClient({ store, products }) {
   const [searchQuery, setSearchQuery] = useState("");
   const { totalItems, cartTotal } = useCart();
   const { formatPrice } = useUtilsFunction();
+  const searchRef = useRef(null);
 
   const filteredProducts = useMemo(() => {
     if (!searchQuery.trim()) return products;
@@ -32,6 +35,7 @@ export default function StoreClient({ store, products }) {
   }, [products, searchQuery]);
 
   return (
+    <StoreProvider slug={store.slug}>
     <div className="min-h-screen bg-background">
       {/* ── KachaBazar StickyCart (original component) ── */}
       <StickyCart />
@@ -88,6 +92,7 @@ export default function StoreClient({ store, products }) {
             <div className="relative">
               <IoSearchOutline className="w-5 h-5 absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input
+                ref={searchRef}
                 type="text"
                 placeholder="ابحث في المنتجات..."
                 value={searchQuery}
@@ -193,9 +198,9 @@ export default function StoreClient({ store, products }) {
         </div>
       </div>
 
-      {/* ── Bottom sticky cart bar (mobile + desktop) ── */}
+      {/* ── Bottom sticky cart bar (when items in cart) ── */}
       {totalItems > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-3 z-30">
+        <div className="fixed bottom-14 lg:bottom-0 left-0 right-0 bg-background border-t border-border p-3 z-30">
           <div className="mx-auto max-w-screen-2xl px-3 sm:px-10">
             <Link
               href={`/${store.slug}/checkout`}
@@ -207,6 +212,13 @@ export default function StoreClient({ store, products }) {
           </div>
         </div>
       )}
+
+      {/* ── Mobile bottom navigation ── */}
+      <MobileBottomNav onSearchFocus={() => searchRef.current?.focus()} />
+
+      {/* spacer for mobile bottom nav */}
+      <div className="h-14 lg:hidden" />
     </div>
+    </StoreProvider>
   );
 }
