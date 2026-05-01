@@ -6,6 +6,7 @@ import { IoSearchOutline } from "react-icons/io5";
 import { IoBagHandleOutline } from "react-icons/io5";
 import { Truck, CreditCard, Shield, ShoppingBag, Search } from "lucide-react";
 
+import Link from "next/link";
 import ProductCard from "@components/product/ProductCard";
 import StickyCart from "@components/cart/StickyCart";
 import useUtilsFunction from "@hooks/useUtilsFunction";
@@ -69,17 +70,17 @@ export default function StoreClient({ store, products }) {
               </div>
             </div>
 
-            {/* Mobile cart button */}
-            <div className="lg:hidden flex items-center">
+            {/* Mobile cart button — links to checkout */}
+            <Link href={`/${store.slug}/checkout`} className="lg:hidden flex items-center">
               <div className="relative">
-                <IoBagHandleOutline className="text-2xl text-primary-500" />
+                <IoBagHandleOutline className="text-2xl text-emerald-500" />
                 {totalItems > 0 && (
-                  <span className="absolute -top-2 -left-2 min-w-[20px] h-5 bg-primary-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+                  <span className="absolute -top-2 -left-2 min-w-[20px] h-5 bg-emerald-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
                     {totalItems}
                   </span>
                 )}
               </div>
-            </div>
+            </Link>
           </div>
 
           {/* Search */}
@@ -191,6 +192,21 @@ export default function StoreClient({ store, products }) {
           )}
         </div>
       </div>
+
+      {/* ── Bottom sticky cart bar (mobile + desktop) ── */}
+      {totalItems > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border p-3 z-30">
+          <div className="mx-auto max-w-screen-2xl px-3 sm:px-10">
+            <Link
+              href={`/${store.slug}/checkout`}
+              className="w-full h-12 bg-emerald-500 text-white rounded-xl text-sm font-semibold hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2"
+            >
+              <IoBagHandleOutline className="w-4 h-4" />
+              عرض السلة ({totalItems}) — {formatPrice(cartTotal)}
+            </Link>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
