@@ -14,7 +14,7 @@ function toKBProduct(p) {
   return {
     _id: String(p.id),
     slug: p.slug || String(p.id),
-    title: p.name, // showingTranslateValue handles strings
+    title: p.name,
     image: p.image ? [p.image] : [],
     prices: {
       price: p.price || 0,
@@ -24,6 +24,7 @@ function toKBProduct(p) {
     isCombination: false,
     variants: [],
     categories: [],
+    category: p.category || "",
     description: p.description || "",
     average_rating: 0,
     total_reviews: 0,

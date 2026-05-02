@@ -114,6 +114,10 @@
   100% { background-position: 200% 0; }
 }
 
+/* ── Scrollbar hide ── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
 /* ── Base styles ── */
 body {
   background: var(--background);

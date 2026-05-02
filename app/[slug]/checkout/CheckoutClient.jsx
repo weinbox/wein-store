@@ -35,17 +35,76 @@ export default function CheckoutClient({ store }) {
   const [region, setRegion] = useState("");
   const [address, setAddress] = useState("");
 
+  // Coupon
+  const [couponCode, setCouponCode] = useState("");
+  const [couponApplied, setCouponApplied] = useState(null); // { code, discount_type, discount_value }
+  const [couponError, setCouponError] = useState("");
+  const [couponLoading, setCouponLoading] = useState(false);
+
   const delivery = store.delivery_price || 0;
-  const grand = cartTotal + delivery;
+
+  const couponDiscount = couponApplied
+    ? couponApplied.discount_type === "percent"
+      ? Math.round((cartTotal * couponApplied.discount_value) / 100)
+      : couponApplied.discount_value
+    : 0;
+
+  const grand = Math.max(0, cartTotal - couponDiscount) + delivery;
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponLoading(true);
+    setCouponError("");
+    try {
+      const { data, error } = await supabase
+        .from("store_coupons")
+        .select("*")
+        .eq("store_id", store.id)
+        .eq("code", couponCode.trim().toUpperCase())
+        .eq("is_active", true)
+        .single();
+
+      if (error || !data) {
+        setCouponError("كوبون غير صالح");
+        setCouponApplied(null);
+        return;
+      }
+      if (data.expires_at && new Date(data.expires_at) < new Date()) {
+        setCouponError("الكوبون منتهي الصلاحية");
+        setCouponApplied(null);
+        return;
+      }
+      if (data.max_uses > 0 && data.used_count >= data.max_uses) {
+        setCouponError("الكوبون استُنفد");
+        setCouponApplied(null);
+        return;
+      }
+      if (data.min_order > 0 && cartTotal < data.min_order) {
+        setCouponError(`الحد الأدنى للطلب ${fmt(data.min_order)} د.ع`);
+        setCouponApplied(null);
+        return;
+      }
+      setCouponApplied(data);
+      setCouponError("");
+    } catch {
+      setCouponError("حدث خطأ");
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setCouponApplied(null);
+    setCouponCode("");
+    setCouponError("");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!items.length) return;
     setSubmitting(true);
     try {
-      const { data: order, error } = await supabase
-        .from("store_orders")
-        .insert({
+      const orderData = {
           store_id: store.id,
           customer_name: custName,
           customer_phone: phone,
@@ -55,7 +114,15 @@ export default function CheckoutClient({ store }) {
           total: grand,
           delivery_price: delivery,
           status: "pending",
-        })
+        };
+      if (couponApplied) {
+        orderData.coupon_code = couponApplied.code;
+        orderData.coupon_discount = couponDiscount;
+      }
+
+      const { data: order, error } = await supabase
+        .from("store_orders")
+        .insert(orderData)
         .select()
         .single();
       if (error) throw error;
@@ -68,6 +135,14 @@ export default function CheckoutClient({ store }) {
         quantity: it.quantity,
       }));
       await supabase.from("store_order_items").insert(orderItems);
+
+      // Increment coupon used_count
+      if (couponApplied) {
+        await supabase
+          .from("store_coupons")
+          .update({ used_count: couponApplied.used_count + 1 })
+          .eq("id", couponApplied.id);
+      }
 
       emptyCart();
       setStep("success");
@@ -289,12 +364,56 @@ export default function CheckoutClient({ store }) {
               ))}
             </div>
 
+            {/* Coupon */}
+            <div className="mb-4">
+              {couponApplied ? (
+                <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-3">
+                  <div>
+                    <span className="text-xs font-bold text-emerald-700">كوبون: {couponApplied.code}</span>
+                    <span className="text-xs text-emerald-600 mr-2">
+                      (-{couponApplied.discount_type === "percent" ? `${couponApplied.discount_value}%` : `${fmt(couponApplied.discount_value)} د.ع`})
+                    </span>
+                  </div>
+                  <button onClick={removeCoupon} className="text-red-400 hover:text-red-500">
+                    <IoClose className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      dir="ltr"
+                      placeholder="كود الخصم"
+                      value={couponCode}
+                      onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                      className="flex-1 h-10 px-3 bg-muted border border-border rounded-xl text-sm outline-none focus:border-emerald-500 text-center"
+                    />
+                    <button
+                      onClick={handleApplyCoupon}
+                      disabled={couponLoading}
+                      className="h-10 px-4 bg-foreground text-background rounded-xl text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+                    >
+                      {couponLoading ? "..." : "تطبيق"}
+                    </button>
+                  </div>
+                  {couponError && <p className="text-xs text-red-500 mt-1">{couponError}</p>}
+                </div>
+              )}
+            </div>
+
             {/* Summary */}
             <div className="bg-card border border-border rounded-xl p-4 space-y-2 mb-4">
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>المجموع الفرعي ({items.length} منتج)</span>
                 <span>{fmt(cartTotal)} د.ع</span>
               </div>
+              {couponDiscount > 0 && (
+                <div className="flex justify-between text-sm text-emerald-600">
+                  <span>خصم الكوبون</span>
+                  <span>-{fmt(couponDiscount)} د.ع</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>التوصيل</span>
                 <span>{fmt(delivery)} د.ع</span>

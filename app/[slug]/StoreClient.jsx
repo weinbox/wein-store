@@ -20,19 +20,33 @@ const formatNum = (n) =>
 
 export default function StoreClient({ store, products }) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState("");
   const { totalItems, cartTotal } = useCart();
   const { formatPrice } = useUtilsFunction();
   const searchRef = useRef(null);
 
+  const categories = useMemo(() => {
+    const cats = products
+      .map((p) => p.category)
+      .filter((c) => c && c.trim() !== "");
+    return [...new Set(cats)];
+  }, [products]);
+
   const filteredProducts = useMemo(() => {
-    if (!searchQuery.trim()) return products;
-    const q = searchQuery.trim().toLowerCase();
-    return products.filter(
-      (p) =>
-        (typeof p.title === "string" && p.title.toLowerCase().includes(q)) ||
-        (p.description && p.description.toLowerCase().includes(q))
-    );
-  }, [products, searchQuery]);
+    let result = products;
+    if (activeCategory) {
+      result = result.filter((p) => p.category === activeCategory);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter(
+        (p) =>
+          (typeof p.title === "string" && p.title.toLowerCase().includes(q)) ||
+          (p.description && p.description.toLowerCase().includes(q))
+      );
+    }
+    return result;
+  }, [products, searchQuery, activeCategory]);
 
   return (
     <StoreProvider slug={store.slug}>
@@ -184,6 +198,39 @@ export default function StoreClient({ store, products }) {
           ))}
         </div>
       </div>
+
+      {/* ══════════════════════════════════════════════
+          CATEGORY FILTER
+      ══════════════════════════════════════════════ */}
+      {categories.length > 0 && (
+        <div className="mx-auto max-w-screen-2xl px-3 sm:px-10 pb-2">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide py-1">
+            <button
+              onClick={() => setActiveCategory("")}
+              className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                !activeCategory
+                  ? "bg-emerald-500 text-white"
+                  : "bg-muted text-muted-foreground hover:bg-muted/80"
+              }`}
+            >
+              الكل
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(activeCategory === cat ? "" : cat)}
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  activeCategory === cat
+                    ? "bg-emerald-500 text-white"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80"
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ══════════════════════════════════════════════
           PRODUCTS — Using KachaBazar ProductCard (original)
