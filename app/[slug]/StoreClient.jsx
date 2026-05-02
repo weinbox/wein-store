@@ -58,7 +58,7 @@ export default function StoreClient({ store, products }) {
           HEADER — Store info + Search
       ══════════════════════════════════════════════ */}
       <header className="sticky top-0 z-20 bg-background border-b border-border shadow-sm">
-        <div className="mx-auto max-w-screen-2xl px-3 sm:px-10">
+        <div className="mx-auto max-w-screen-2xl px-5 sm:px-10">
           {/* Top bar */}
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
@@ -121,7 +121,7 @@ export default function StoreClient({ store, products }) {
       {/* ══════════════════════════════════════════════
           WELCOME BANNER
       ══════════════════════════════════════════════ */}
-      <div className="mx-auto max-w-screen-2xl px-3 sm:px-10 pt-4">
+      <div className="mx-auto max-w-screen-2xl px-5 sm:px-10 pt-4">
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-l from-emerald-500 via-emerald-600 to-teal-600 p-6 sm:p-8">
           <div className="absolute inset-0 opacity-10">
             <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white" />
@@ -151,7 +151,7 @@ export default function StoreClient({ store, products }) {
       {/* ══════════════════════════════════════════════
           STORE INFO BADGES
       ══════════════════════════════════════════════ */}
-      <div className="mx-auto max-w-screen-2xl px-3 sm:px-10 pt-4">
+      <div className="mx-auto max-w-screen-2xl px-5 sm:px-10 pt-4">
         <div className="grid grid-cols-3 gap-2.5 mb-6">
           {[
             {
@@ -203,7 +203,7 @@ export default function StoreClient({ store, products }) {
           CATEGORY FILTER
       ══════════════════════════════════════════════ */}
       {categories.length > 0 && (
-        <div className="mx-auto max-w-screen-2xl px-3 sm:px-10 pb-2">
+        <div className="mx-auto max-w-screen-2xl px-5 sm:px-10 pb-2">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide py-1">
             <button
               onClick={() => setActiveCategory("")}
@@ -236,7 +236,7 @@ export default function StoreClient({ store, products }) {
           PRODUCTS — Using KachaBazar ProductCard (original)
       ══════════════════════════════════════════════ */}
       <div className="bg-background lg:py-10 py-6">
-        <div className="mx-auto max-w-screen-2xl px-3 sm:px-10">
+        <div className="mx-auto max-w-screen-2xl px-5 sm:px-10">
           <div className="mb-6 flex justify-between items-center">
             <h2 className="text-lg font-semibold text-foreground">المنتجات</h2>
             <p className="text-sm text-muted-foreground">
@@ -273,7 +273,7 @@ export default function StoreClient({ store, products }) {
       {/* ── Bottom sticky cart bar (when items in cart) ── */}
       {totalItems > 0 && (
         <div className="fixed bottom-14 lg:bottom-0 left-0 right-0 bg-background border-t border-border p-3 z-30">
-          <div className="mx-auto max-w-screen-2xl px-3 sm:px-10">
+          <div className="mx-auto max-w-screen-2xl px-5 sm:px-10">
             <Link
               href={`/${store.slug}/checkout`}
               className="w-full h-12 bg-emerald-500 text-white rounded-xl text-sm font-semibold hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2"

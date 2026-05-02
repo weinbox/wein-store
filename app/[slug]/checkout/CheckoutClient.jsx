@@ -184,7 +184,7 @@ export default function CheckoutClient({ store }) {
     return (
       <div className="min-h-screen bg-background">
         <header className="sticky top-0 z-20 bg-background border-b border-border">
-          <div className="max-w-screen-lg mx-auto px-4 flex items-center h-14">
+          <div className="max-w-screen-lg mx-auto px-5 flex items-center h-14">
             <button onClick={() => setStep("cart")} className="text-foreground">
               <IoArrowBack className="w-5 h-5" />
             </button>
@@ -194,7 +194,7 @@ export default function CheckoutClient({ store }) {
             <div className="w-5" />
           </div>
         </header>
-        <form onSubmit={handleSubmit} className="max-w-screen-lg mx-auto px-4 py-6 space-y-4">
+        <form onSubmit={handleSubmit} className="max-w-screen-lg mx-auto px-5 py-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-foreground mb-1">الاسم الكامل *</label>
             <input
@@ -276,7 +276,7 @@ export default function CheckoutClient({ store }) {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-20 bg-background border-b border-border">
-        <div className="max-w-screen-lg mx-auto px-4 flex items-center h-14">
+        <div className="max-w-screen-lg mx-auto px-5 flex items-center h-14">
           <Link href={`/${store.slug}`} className="text-foreground">
             <IoArrowBack className="w-5 h-5" />
           </Link>
@@ -287,7 +287,7 @@ export default function CheckoutClient({ store }) {
         </div>
       </header>
 
-      <div className="max-w-screen-lg mx-auto px-4 py-6">
+      <div className="max-w-screen-lg mx-auto px-5 py-6">
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-28">
             <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-4">

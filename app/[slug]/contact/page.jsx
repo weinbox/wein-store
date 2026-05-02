@@ -41,7 +41,7 @@ export default async function ContactPage({ params }) {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-20 bg-background border-b border-border">
-        <div className="mx-auto max-w-screen-md px-4 h-14 flex items-center gap-3">
+        <div className="mx-auto max-w-screen-md px-5 h-14 flex items-center gap-3">
           <Link href={`/${slug}`} className="text-foreground hover:text-primary">
             <IoArrowBack className="w-5 h-5" />
           </Link>
@@ -49,7 +49,7 @@ export default async function ContactPage({ params }) {
         </div>
       </header>
 
-      <div className="mx-auto max-w-screen-md px-4 py-8 space-y-4">
+      <div className="mx-auto max-w-screen-md px-5 py-8 space-y-4">
         <h2 className="text-xl font-bold text-foreground text-center mb-6">
           تواصل مع {store.name}
         </h2>

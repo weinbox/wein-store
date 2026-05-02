@@ -38,7 +38,7 @@ export default async function AboutPage({ params }) {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-20 bg-background border-b border-border">
-        <div className="mx-auto max-w-screen-md px-4 h-14 flex items-center gap-3">
+        <div className="mx-auto max-w-screen-md px-5 h-14 flex items-center gap-3">
           <Link href={`/${slug}`} className="text-foreground hover:text-primary">
             <IoArrowBack className="w-5 h-5" />
           </Link>
@@ -46,7 +46,7 @@ export default async function AboutPage({ params }) {
         </div>
       </header>
 
-      <div className="mx-auto max-w-screen-md px-4 py-8 space-y-8">
+      <div className="mx-auto max-w-screen-md px-5 py-8 space-y-8">
         {/* Store icon */}
         <div className="text-center">
           <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
