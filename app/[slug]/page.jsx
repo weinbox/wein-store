@@ -72,14 +72,22 @@ export default async function StorePage({ params }) {
     );
   }
 
-  const { data: products } = await supabase
-    .from("products")
-    .select("*")
-    .eq("store_id", store.id)
-    .eq("is_active", true)
-    .order("created_at", { ascending: false });
+  const [{ data: products }, { data: banners }] = await Promise.all([
+    supabase
+      .from("products")
+      .select("*")
+      .eq("store_id", store.id)
+      .eq("is_active", true)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("store_banners")
+      .select("*")
+      .eq("store_id", store.id)
+      .eq("is_active", true)
+      .order("sort_order", { ascending: true }),
+  ]);
 
   const kbProducts = (products || []).map(toKBProduct);
 
-  return <StoreClient store={store} products={kbProducts} />;
+  return <StoreClient store={store} products={kbProducts} banners={banners || []} />;
 }

@@ -12,13 +12,14 @@ import StickyCart from "@components/cart/StickyCart";
 import useUtilsFunction from "@hooks/useUtilsFunction";
 import { StoreProvider } from "@context/StoreContext";
 import MobileBottomNav from "@components/store/MobileBottomNav";
+import BannerSlider from "@components/store/BannerSlider";
 
 const formatNum = (n) =>
   Math.round(n)
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-export default function StoreClient({ store, products }) {
+export default function StoreClient({ store, products, banners = [] }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("");
   const { totalItems, cartTotal } = useCart();
@@ -119,33 +120,10 @@ export default function StoreClient({ store, products }) {
       </header>
 
       {/* ══════════════════════════════════════════════
-          WELCOME BANNER
+          BANNER SLIDER
       ══════════════════════════════════════════════ */}
       <div className="mx-auto max-w-screen-2xl px-5 sm:px-10 pt-4">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-l from-emerald-500 via-emerald-600 to-teal-600 p-6 sm:p-8">
-          <div className="absolute inset-0 opacity-10">
-            <div className="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white" />
-            <div className="absolute -bottom-10 -left-10 w-60 h-60 rounded-full bg-white" />
-          </div>
-          <div className="relative z-10">
-            <h2 className="text-white text-xl sm:text-2xl font-bold mb-1">
-              مرحباً بك في {store.name}
-            </h2>
-            <p className="text-white/80 text-sm sm:text-base">
-              {store.description || "تصفح منتجاتنا واطلب بسهولة — توصيل سريع ودفع عند الاستلام"}
-            </p>
-            <div className="flex items-center gap-3 mt-4">
-              <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full">
-                <Truck className="w-3.5 h-3.5" />
-                توصيل {formatNum(store.delivery_price || 0)} د.ع
-              </span>
-              <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm text-white text-xs font-medium px-3 py-1.5 rounded-full">
-                <CreditCard className="w-3.5 h-3.5" />
-                الدفع عند الاستلام
-              </span>
-            </div>
-          </div>
-        </div>
+        <BannerSlider banners={banners} store={store} />
       </div>
 
       {/* ══════════════════════════════════════════════
